@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "131628402545",
+    "project_id": "todolocationreminder",
+    "storage_bucket": "todolocationreminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131628402545:android:70cc97ad1f50043788d8d0",
+        "android_client_info": {
+          "package_name": "com.udacity.project4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131628402545-m0584k1so3pdd4n393dcprckktcaaj1f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udacity.project4",
+            "certificate_hash": "62e21b9ec9e5bea80f89cbd573141ddc4963d161"
+          }
+        },
+        {
+          "client_id": "131628402545-5b5sbijv54hcjth4l18s29296cmb5v64.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0q580Q1qCKlrEMBb-UcahQEC-cqn9rg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131628402545-5b5sbijv54hcjth4l18s29296cmb5v64.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
