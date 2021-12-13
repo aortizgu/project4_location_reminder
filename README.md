@@ -42,9 +42,33 @@ Explain what each test does and why
 
 ```
 1.androidTest
-        //TODO: Students explain their testing here.
+ * RemindersActivityTest:
+  - createReminder_noTitle: check that cannot save a reminder if no title setted.
+  - createReminder_noLocation: check that cannot save a reminder if no location setted.
+ * RemindersDaoTest:
+  - insertReminderAndGetById: inserts a reminder and get it by id
+  - insertReminderAndDelete: inserts a reminder , delete all and check that no reminders
+  - insertReminderAndGetByIdError: try to get an invalid reminder and check that returns null
+ * RemindersLocalRepositoryTest:
+  - saveReminder_retrievesReminder: inserts a reminder and get it by id
+ * ReminderListFragmentTest:
+  - clickAddReminder_navigateToSaveFragment: check that when click on AddReminder button, app navigates to SaveFragment
+  - noDataTextView_isShown: check that if reminder list is empty, a no data drawn is shown
+  - noDataTextView_isNotShown: check that if reminder list is not empty, a no data drawn is not shown
+  - reminderlist_areShown: check that a list of reminders is shown in the ReminderListFragment
+  - forceDataSourceError_isShown: check that if reminder list cannot be loaded, an error is shown in a snack bar
 2. test
-        //TODO: Students explain their testing here.
+ * RemindersListViewModelTest:
+  - loadReminders_emptyList: check that remindersListViewModel show emptyList flag
+  - loadReminders_noEmptyList: check that remindersListViewModel doesn't show emptyList flag
+  - loadReminders_showLoading: check that remindersListViewModel shows loading
+  - loadReminders_forceError: check that remindersListViewModel shows an error when loading it from datasource
+ * SaveReminderViewModelTest:
+  - validateAndSaveReminder_ok: 
+        - check that saveReminderViewModel shows a toast when a reminder is saved
+        - check that saveReminderViewModel navigates back when a reminder is saved
+        - check that saveReminderViewModel shows a loading state when a reminder is being saved
+  - validateEnteredData_possibleCasses: check that saveReminderViewModel validates a reminder when tries to save it
 ```
 
 ## Project Instructions
@@ -68,8 +92,8 @@ Explain what each test does and why
 
 ## Student Deliverables:
 
-1. APK file of the final project.
-2. Git Repository with the code.
+1. APK file of the final project. Found inside apk folder
+2. Git Repository with the code. 
 
 ## Built With
 
