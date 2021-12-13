@@ -7,7 +7,6 @@ import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.utils.FirebaseAuthStateLiveData
 import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
@@ -16,7 +15,6 @@ class RemindersListViewModel(
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
-    val authenticationState = FirebaseAuthStateLiveData()
 
     /**
      * Get all the reminders from the DataSource and add them to the remindersList to be shown on the UI,

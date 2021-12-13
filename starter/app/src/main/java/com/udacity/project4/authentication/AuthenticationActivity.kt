@@ -10,7 +10,6 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.databinding.ActivityAuthenticationBinding
 import com.udacity.project4.locationreminders.RemindersActivity
-import com.udacity.project4.utils.FirebaseAuthStateLiveData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -30,7 +29,7 @@ class AuthenticationActivity : AppCompatActivity() {
         viewModel.authenticationState?.observe(this, Observer { authenticationState ->
             Timber.i("authenticationState changed $authenticationState")
             when (authenticationState) {
-                FirebaseAuthStateLiveData.AuthenticationState.AUTHENTICATED -> {
+                AuthenticationViewModel.AuthenticationState.AUTHENTICATED -> {
                     val intent = Intent(this, RemindersActivity::class.java)
                     startActivity(intent)
                     finish()

@@ -12,7 +12,6 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.locationreminders.ReminderDescriptionActivity
-import com.udacity.project4.utils.FirebaseAuthStateLiveData
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
@@ -50,16 +49,6 @@ class ReminderListFragment : BaseFragment() {
         binding.addReminderFAB.setOnClickListener {
             navigateToAddReminder()
         }
-        _viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
-            Timber.i("authenticationState changed $authenticationState")
-            when (authenticationState) {
-                FirebaseAuthStateLiveData.AuthenticationState.UNAUTHENTICATED -> {
-                    val intent = Intent(requireContext(), AuthenticationActivity::class.java)
-                    startActivity(intent)
-                    requireActivity().finish()
-                }
-            }
-        })
 
     }
 
@@ -89,7 +78,10 @@ class ReminderListFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-                AuthUI.getInstance().signOut(requireContext())
+                AuthUI.getInstance().signOut(requireContext()).addOnCompleteListener {
+                    val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()                }
             }
         }
         return super.onOptionsItemSelected(item)
