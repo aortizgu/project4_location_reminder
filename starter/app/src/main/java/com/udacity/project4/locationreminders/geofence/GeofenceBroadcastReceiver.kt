@@ -33,21 +33,10 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> Timber.e("onReceive: error, GEOFENCE_TOO_MANY_PENDING_INTENTS")
                     else -> Timber.e("onReceive: error, GEOFENCE_ERROR")
                 }
-                return
-            }
-
-            if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-                val fenceId = when {
-                    geofencingEvent.triggeringGeofences.isNotEmpty() ->
-                        geofencingEvent.triggeringGeofences[0].requestId
-                    else -> {
-                        Timber.e("onReceive: No Geofence Trigger Found! Abort mission!")
-                        return
-                    }
-                }
-                Timber.v("onReceive: fenceId? $fenceId")
+            } else if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER && geofencingEvent.triggeringGeofences.isNotEmpty()) {
                 GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
             }
         }
     }
+
 }
