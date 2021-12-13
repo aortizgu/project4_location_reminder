@@ -4,9 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.locationreminders.MainCoroutineRule
+import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.data.dto.ReminderDTO
+import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
-import com.udacity.project4.locationreminders.data.FakeDataSource
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -26,27 +28,57 @@ class RemindersListViewModelTest {
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
-    //TODO: provide testing to the RemindersListViewModel and its live data objects
     private lateinit var dataSource: FakeDataSource
     private lateinit var remindersListViewModel: RemindersListViewModel
 
     @Before
     fun setupViewModel() {
         stopKoin()
-        dataSource = FakeDataSource()
-        remindersListViewModel = RemindersListViewModel(ApplicationProvider.getApplicationContext(), dataSource)
+        dataSource =
+            FakeDataSource(mutableListOf(ReminderDTO("title", "description", "location", 0.0, 0.0)))
+        remindersListViewModel =
+            RemindersListViewModel(ApplicationProvider.getApplicationContext(), dataSource)
     }
 
     @Test
-    fun loadReminders_ok(){
-        //GIVEN
+    fun loadReminders_emptyList() = runBlocking {
+        dataSource.deleteAllReminders()
         remindersListViewModel.loadReminders()
 
-        //WHEN
-        //val showNoData = remindersListViewModel.showNoData.getOrAwaitValue()
+        val showNoData = remindersListViewModel.showNoData.getOrAwaitValue()
 
-        //THEN
         assertThat(showNoData, `is`(true))
     }
 
+    @Test
+    fun loadReminders_noEmptyList() {
+        remindersListViewModel.loadReminders()
+
+        val showNoData = remindersListViewModel.showNoData.getOrAwaitValue()
+
+        assertThat(showNoData, `is`(false))
+    }
+
+    @Test
+    fun loadReminders_showLoading() {
+        mainCoroutineRule.pauseDispatcher()
+
+        remindersListViewModel.loadReminders()
+
+        assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(true))
+        mainCoroutineRule.resumeDispatcher()
+        assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(false))
+    }
+
+    @Test
+    fun loadReminders_forceError() {
+        dataSource.setError(true)
+        remindersListViewModel.loadReminders()
+
+        val showNoData = remindersListViewModel.showNoData.getOrAwaitValue()
+        val errorMessage = remindersListViewModel.showSnackBar.getOrAwaitValue()
+
+        assertThat(showNoData, `is`(true))
+        assertThat(errorMessage, `is`("error message"))
+    }
 }

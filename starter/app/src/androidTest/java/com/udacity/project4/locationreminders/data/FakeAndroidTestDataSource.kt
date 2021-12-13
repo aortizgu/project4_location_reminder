@@ -5,8 +5,7 @@ import com.udacity.project4.locationreminders.data.dto.Result
 import java.lang.Exception
 
 //Use FakeDataSource that acts as a test double to the LocalDataSource
-class FakeDataSource(var reminders: MutableList<ReminderDTO>? = mutableListOf()) :
-    ReminderDataSource {
+class FakeAndroidTestDataSource(var reminders: MutableList<ReminderDTO>? = mutableListOf()) : ReminderDataSource {
 
     private var isError = false
 
@@ -37,6 +36,5 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO>? = mutableListOf())
     override suspend fun deleteAllReminders() {
         reminders?.clear()
     }
-
 
 }
