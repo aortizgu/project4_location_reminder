@@ -3,6 +3,11 @@ package com.udacity.project4.locationreminders.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofenceStatusCodes
+import com.google.android.gms.location.GeofencingEvent
+import com.udacity.project4.locationreminders.savereminder.SaveReminderFragment.Companion.ACTION_GEOFENCE_EVENT
+import timber.log.Timber
 
 /**
  * Triggered by the Geofence.  Since we can have many Geofences at once, we pull the request
@@ -15,9 +20,34 @@ import android.content.Intent
  */
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) {
+        Timber.v("onReceive action? $intent.action")
+        if (intent.action == ACTION_GEOFENCE_EVENT) {
+            val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
-//TODO: implement the onReceive method to receive the geofencing events at the background
+            if (geofencingEvent.hasError()) {
+                when (geofencingEvent.errorCode) {
+                    GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> Timber.e("onReceive: error, GEOFENCE_NOT_AVAILABLE")
+                    GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> Timber.e("onReceive: error, GEOFENCE_TOO_MANY_GEOFENCES")
+                    GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> Timber.e("onReceive: error, GEOFENCE_TOO_MANY_PENDING_INTENTS")
+                    else -> Timber.e("onReceive: error, GEOFENCE_ERROR")
+                }
+                return
+            }
 
+            if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+                val fenceId = when {
+                    geofencingEvent.triggeringGeofences.isNotEmpty() ->
+                        geofencingEvent.triggeringGeofences[0].requestId
+                    else -> {
+                        Timber.e("onReceive: No Geofence Trigger Found! Abort mission!")
+                        return
+                    }
+                }
+                Timber.v("onReceive: fenceId? $fenceId")
+                GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
+            }
+        }
     }
 }

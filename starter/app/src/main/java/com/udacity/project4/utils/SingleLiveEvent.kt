@@ -16,12 +16,11 @@
 
 package com.udacity.project4.utils
 
-import timber.log.Timber
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**

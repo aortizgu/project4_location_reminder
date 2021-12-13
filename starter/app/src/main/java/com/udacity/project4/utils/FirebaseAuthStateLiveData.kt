@@ -16,8 +16,8 @@
 
 package com.udacity.project4.utils
 
-import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.LiveData
+import com.google.firebase.auth.FirebaseAuth
 
 class FirebaseAuthStateLiveData : LiveData<FirebaseAuthStateLiveData.AuthenticationState?>() {
     private val firebaseAuth = FirebaseAuth.getInstance()

@@ -4,10 +4,10 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
 import android.view.*
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -16,9 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -40,6 +38,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private var marker: Marker? = null
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng(-33.8523341, 151.2106085)
+    private var selectedPOI: PointOfInterest? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -67,9 +66,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun onLocationSelected() {
+        _viewModel.latitude.value = selectedPOI?.latLng?.latitude
+        _viewModel.longitude.value = selectedPOI?.latLng?.longitude
+        _viewModel.reminderSelectedLocationStr.value = selectedPOI?.name
+        _viewModel.selectedPOI.value = selectedPOI
         _viewModel.navigationCommand.value = NavigationCommand.Back
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_options, menu)
@@ -96,7 +98,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
+        Timber.d("onMapReady")
         map = googleMap!!
+        setMapStyle()
         setPoiClick()
         enableMyLocation()
     }
@@ -111,12 +115,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
+        Timber.d("enableMyLocation")
         if (isPermissionGranted()) {
+            Timber.d("enableMyLocation: permission granted")
             map.isMyLocationEnabled = true
             getDeviceLocation()
         } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
+            Timber.d("enableMyLocation: permission not granted")
+            requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_LOCATION_PERMISSION
             )
@@ -128,19 +134,27 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Timber.d("onRequestPermissionsResult: requestCode? $requestCode permissions? $permissions grantResults? $grantResults")
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Timber.d("onRequestPermissionsResult: granted, try to enable my location")
                 enableMyLocation()
+            } else {
+                Timber.d("onRequestPermissionsResult: not granted")
             }
+        } else {
+            Timber.d("onRequestPermissionsResult: not managed code")
         }
     }
 
     private fun getDeviceLocation() {
+        Timber.d("getDeviceLocation")
         try {
             val locationResult = fusedLocationProviderClient.lastLocation
             locationResult.addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    // Set the map's camera position to the current location of the device.
+                    Timber.d("getDeviceLocation: Task Successful, move map to current location")
                     lastKnownLocation = task.result
                     if (lastKnownLocation != null) {
                         map?.moveCamera(
@@ -153,7 +167,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                         )
                     }
                 } else {
-                    Timber.d("Current location is null. Using defaults.")
+                    Timber.d("getDeviceLocation: Current location is null. Using defaults.")
                     Timber.e("Exception: %s", task.exception)
                     map?.moveCamera(
                         CameraUpdateFactory
@@ -163,16 +177,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 }
             }
         } catch (e: SecurityException) {
-            Timber.e("Exception: $e.message, $e")
+            Timber.e("getDeviceLocation: Exception: $e.message, $e")
         }
     }
 
     private fun setPoiClick() {
+        Timber.d("setPoiClick")
         map.setOnPoiClickListener { poi ->
-            _viewModel.latitude.value = poi.latLng.latitude
-            _viewModel.longitude.value = poi.latLng.longitude
-            _viewModel.reminderSelectedLocationStr.value = poi.name
-            _viewModel.selectedPOI.value = poi
+            selectedPOI = poi
 
             marker?.remove()
             map.addMarker(
@@ -187,4 +199,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             binding.buttonSave.visibility = View.VISIBLE
         }
     }
+
+    private fun setMapStyle() {
+        Timber.d("setMapStyle")
+        try {
+            val success = map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.map_style
+                )
+            )
+            if (!success) {
+                Timber.e("Style parsing failed.")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e("Can't find style. Error: $e")
+        }
+    }
+
 }

@@ -11,6 +11,7 @@ import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
+import com.udacity.project4.locationreminders.ReminderDescriptionActivity
 import com.udacity.project4.utils.FirebaseAuthStateLiveData
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
@@ -51,7 +52,7 @@ class ReminderListFragment : BaseFragment() {
         }
         _viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
             Timber.i("authenticationState changed $authenticationState")
-            when(authenticationState){
+            when (authenticationState) {
                 FirebaseAuthStateLiveData.AuthenticationState.UNAUTHENTICATED -> {
                     val intent = Intent(requireContext(), AuthenticationActivity::class.java)
                     startActivity(intent)
@@ -79,9 +80,9 @@ class ReminderListFragment : BaseFragment() {
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
+            startActivity(ReminderDescriptionActivity.newIntent(requireContext(), it))
         }
 
-//        setup the recycler view using the extension function
         binding.reminderssRecyclerView.setup(adapter)
     }
 
