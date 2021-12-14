@@ -190,22 +190,20 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun setPoiClick() {
         Timber.d("setPoiClick")
         map.setOnPoiClickListener { poi ->
-            if (isPermissionGranted()) {
-                selectedPOI = poi
-                selectedLatLng = poi.latLng
-                selectedLocation = poi.name
-                marker?.remove()
-                map.addMarker(
-                    MarkerOptions()
-                        .position(poi.latLng)
-                        .title(poi.name)
-                ).let {
-                    it.showInfoWindow()
-                    marker = it
-                }
-
-                binding.buttonSave.visibility = View.VISIBLE
+            selectedPOI = poi
+            selectedLatLng = poi.latLng
+            selectedLocation = poi.name
+            marker?.remove()
+            map.addMarker(
+                MarkerOptions()
+                    .position(poi.latLng)
+                    .title(poi.name)
+            ).let {
+                it.showInfoWindow()
+                marker = it
             }
+
+            binding.buttonSave.visibility = View.VISIBLE
         }
     }
 
@@ -228,27 +226,25 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun setMapOnClick() {
         map.setOnMapClickListener { latLng ->
-            if (isPermissionGranted()) {
-                val snippet = String.format(
-                    Locale.getDefault(),
-                    "Lat: %1$.5f, Long: %2$.5f",
-                    latLng.latitude,
-                    latLng.longitude
-                )
-                selectedPOI = null
-                selectedLatLng = latLng
-                selectedLocation = snippet
+            val snippet = String.format(
+                Locale.getDefault(),
+                "Lat: %1$.5f, Long: %2$.5f",
+                latLng.latitude,
+                latLng.longitude
+            )
+            selectedPOI = null
+            selectedLatLng = latLng
+            selectedLocation = snippet
 
-                marker?.remove()
-                marker = map.addMarker(
-                    MarkerOptions()
-                        .position(latLng)
-                        .title(getString(R.string.dropped_pin))
-                        .snippet(snippet)
-                )
+            marker?.remove()
+            marker = map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.dropped_pin))
+                    .snippet(snippet)
+            )
 
-                binding.buttonSave.visibility = View.VISIBLE
-            }
+            binding.buttonSave.visibility = View.VISIBLE
         }
     }
 }
