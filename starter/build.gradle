@@ -1,7 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlinVersion = '1.4.32'
+    ext {
+        kotlin_version = '1.5.21'
+    }
+    ext.kotlinVersion = '1.5.21'
     ext.navigationVersion = "2.3.5"
 
     repositories {
@@ -44,25 +47,26 @@ ext {
     appCompatVersion = '1.2.0'
     archLifecycleVersion = '2.2.0'
     cardVersion = '1.0.0'
-    materialVersion = '1.1.0'
-    fragmentVersion = '1.1.0-alpha07'
+    materialVersion = '1.4.0'
+    fragmentVersion = '1.3.6'
+    activityVersion = '1.2.1'
     recyclerViewVersion = '1.1.0'
     mockitoVersion = '2.8.9'
     constraintVersion = '2.0.0-rc1'
     dexMakerVersion = '2.12.1'
     coroutinesVersion = '1.2.1'
-    roomVersion = '2.2.5'
+    roomVersion = '2.3.0'
     koinVersion = '2.0.1'
     truthVersion = '0.44'
     junitVersion = '4.12'
-    androidXTestCoreVersion = '1.2.0-beta01'
+    androidXTestCoreVersion = '1.4.0'
     robolectricVersion = '4.7.3'
-    androidXTestExtKotlinRunnerVersion = '1.1.1'
-    archTestingVersion = '2.0.0'
+    androidXTestExtKotlinRunnerVersion = '1.1.3'
+    archTestingVersion = '2.1.0'
     playServicesVersion = '17.0.0'
     hamcrestVersion = '1.3'
-    androidXTestRulesVersion = '1.2.0-beta01'
-    espressoVersion = '3.2.0'
+    androidXTestRulesVersion = '1.4.0'
+    espressoVersion = '3.4.0'
     firebaseUIVersion = '5.0.0'
     multidexVersion = '2.0.1'
     timberVersion = '4.7.1'

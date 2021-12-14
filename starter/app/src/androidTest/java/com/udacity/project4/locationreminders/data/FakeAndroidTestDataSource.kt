@@ -26,6 +26,9 @@ class FakeAndroidTestDataSource(var reminders: MutableList<ReminderDTO>? = mutab
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
+        if (isError) {
+            return Result.Error(("error message"))
+        }
         reminders?.firstOrNull { it.id == id }?.let {
             return Result.Success(it)
         }

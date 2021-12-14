@@ -65,4 +65,10 @@ class RemindersLocalRepositoryTest {
         assertThat(loaded.data.latitude, `is`(reminder.latitude))
         assertThat(loaded.data.longitude, `is`(reminder.longitude))
     }
+
+    @Test
+    fun retrievesReminder_error() = runBlocking {
+        val loaded = localDataSource.getReminder("badId")
+        Assert.assertThat(loaded.succeeded, `is`(false))
+    }
 }

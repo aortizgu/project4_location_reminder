@@ -18,6 +18,7 @@ class AuthenticationActivity : AppCompatActivity() {
     companion object {
         const val SIGN_IN_RESULT_CODE = 1001
     }
+
     val viewModel: AuthenticationViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {

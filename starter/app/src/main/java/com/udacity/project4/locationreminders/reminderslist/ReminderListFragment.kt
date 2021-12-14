@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
@@ -16,7 +15,6 @@ import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class ReminderListFragment : BaseFragment() {
     //use Koin to retrieve the ViewModel instance
@@ -81,7 +79,8 @@ class ReminderListFragment : BaseFragment() {
                 AuthUI.getInstance().signOut(requireContext()).addOnCompleteListener {
                     val intent = Intent(requireContext(), AuthenticationActivity::class.java)
                     startActivity(intent)
-                    requireActivity().finish()                }
+                    requireActivity().finish()
+                }
             }
         }
         return super.onOptionsItemSelected(item)

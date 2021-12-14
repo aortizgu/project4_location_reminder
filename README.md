@@ -45,12 +45,14 @@ Explain what each test does and why
  * RemindersActivityTest:
   - createReminder_noTitle: check that cannot save a reminder if no title setted.
   - createReminder_noLocation: check that cannot save a reminder if no location setted.
+  - createReminder_ok: create a reminder and check toast message
  * RemindersDaoTest:
   - insertReminderAndGetById: inserts a reminder and get it by id
   - insertReminderAndDelete: inserts a reminder , delete all and check that no reminders
   - insertReminderAndGetByIdError: try to get an invalid reminder and check that returns null
  * RemindersLocalRepositoryTest:
   - saveReminder_retrievesReminder: inserts a reminder and get it by id
+  - retrievesReminder_error: check that fetching awrong reminder id, result is not succeded
  * ReminderListFragmentTest:
   - clickAddReminder_navigateToSaveFragment: check that when click on AddReminder button, app navigates to SaveFragment
   - noDataTextView_isShown: check that if reminder list is empty, a no data drawn is shown

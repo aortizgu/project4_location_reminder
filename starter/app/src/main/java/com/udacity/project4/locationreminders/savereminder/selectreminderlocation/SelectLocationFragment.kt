@@ -25,6 +25,7 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.util.*
 
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
@@ -39,6 +40,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng(-33.8523341, 151.2106085)
     private var selectedPOI: PointOfInterest? = null
+    private var selectedLatLng: LatLng? = null
+    private var selectedLocation: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -66,9 +69,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun onLocationSelected() {
-        _viewModel.latitude.value = selectedPOI?.latLng?.latitude
-        _viewModel.longitude.value = selectedPOI?.latLng?.longitude
-        _viewModel.reminderSelectedLocationStr.value = selectedPOI?.name
+        _viewModel.latitude.value = selectedLatLng?.latitude
+        _viewModel.longitude.value = selectedLatLng?.longitude
+        _viewModel.reminderSelectedLocationStr.value = selectedLocation
         _viewModel.selectedPOI.value = selectedPOI
         _viewModel.navigationCommand.value = NavigationCommand.Back
     }
@@ -102,6 +105,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         map = googleMap!!
         setMapStyle()
         setPoiClick()
+        setMapOnClick()
         enableMyLocation()
     }
 
@@ -141,6 +145,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 Timber.d("onRequestPermissionsResult: granted, try to enable my location")
                 enableMyLocation()
             } else {
+                _viewModel.showErrorMessage.value =
+                    getString(R.string.permission_denied_explanation)
                 Timber.d("onRequestPermissionsResult: not granted")
             }
         } else {
@@ -184,19 +190,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun setPoiClick() {
         Timber.d("setPoiClick")
         map.setOnPoiClickListener { poi ->
-            selectedPOI = poi
+            if (isPermissionGranted()) {
+                selectedPOI = poi
+                selectedLatLng = poi.latLng
+                selectedLocation = poi.name
+                marker?.remove()
+                map.addMarker(
+                    MarkerOptions()
+                        .position(poi.latLng)
+                        .title(poi.name)
+                ).let {
+                    it.showInfoWindow()
+                    marker = it
+                }
 
-            marker?.remove()
-            map.addMarker(
-                MarkerOptions()
-                    .position(poi.latLng)
-                    .title(poi.name)
-            ).let {
-                it.showInfoWindow()
-                marker = it
+                binding.buttonSave.visibility = View.VISIBLE
             }
-
-            binding.buttonSave.visibility = View.VISIBLE
         }
     }
 
@@ -217,4 +226,29 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    private fun setMapOnClick() {
+        map.setOnMapClickListener { latLng ->
+            if (isPermissionGranted()) {
+                val snippet = String.format(
+                    Locale.getDefault(),
+                    "Lat: %1$.5f, Long: %2$.5f",
+                    latLng.latitude,
+                    latLng.longitude
+                )
+                selectedPOI = null
+                selectedLatLng = latLng
+                selectedLocation = snippet
+
+                marker?.remove()
+                marker = map.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(getString(R.string.dropped_pin))
+                        .snippet(snippet)
+                )
+
+                binding.buttonSave.visibility = View.VISIBLE
+            }
+        }
+    }
 }

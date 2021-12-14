@@ -1,9 +1,8 @@
 package com.udacity.project4.authentication
 
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.LiveData
-import com.udacity.project4.utils.SingleLiveEvent
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
     private val firebaseAuth = FirebaseAuth.getInstance()

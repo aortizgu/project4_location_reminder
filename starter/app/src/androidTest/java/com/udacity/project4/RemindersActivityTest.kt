@@ -15,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.google.android.material.internal.ContextUtils.getActivity
 import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
@@ -108,6 +109,23 @@ class RemindersActivityTest :
         onView(withId(R.id.saveReminder)).perform(click())
         onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(matches(withText(R.string.err_select_location)))
+        activityScenario.close()
+    }
+
+    @Test
+    fun createReminder_ok() = runBlocking {
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        onView(withId(R.id.addReminderFAB)).perform(click())
+        onView(withId(R.id.reminderTitle)).perform(typeText("title"), closeSoftKeyboard())
+        onView(withId(R.id.reminderDescription)).perform(typeText("description"), closeSoftKeyboard())
+        onView(withId(R.id.selectLocation)).perform(click())
+        onView(withId(R.id.mapFragment)).perform(click())
+        delay(100)
+        onView(withId(R.id.buttonSave)).check(matches(isDisplayed()))
+        onView(withId(R.id.buttonSave)).perform(click())
+        onView(withId(R.id.saveReminder)).perform(click())
+        onView(withText(R.string.geofence_entered))
+            .inRoot(withDecorView(not((getActivity(appContext)?.window?.decorView)))).check(matches(isDisplayed()))
         activityScenario.close()
     }
 }

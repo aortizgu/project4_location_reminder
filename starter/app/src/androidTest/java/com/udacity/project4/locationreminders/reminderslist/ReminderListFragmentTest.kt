@@ -20,14 +20,12 @@ import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.FakeAndroidTestDataSource
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Before
@@ -42,7 +40,6 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import androidx.test.espresso.matcher.ViewMatchers.assertThat as assertThat
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
